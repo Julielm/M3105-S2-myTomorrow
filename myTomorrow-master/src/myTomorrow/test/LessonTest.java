@@ -45,13 +45,13 @@ public class LessonTest extends TestCase {
 		Lesson lesson = new Lesson("Projet", null);
 		boolean answer = lesson.hasFreePlace();
 		assertEquals(answer, true);
-		lesson.setPersonList(new Person("Bourdon","Laetitia"));
+		lesson.setAttendeesList(new Person("Bourdon","Laetitia"));
 		answer = lesson.hasFreePlace();
 		assertEquals(answer, true);
-		lesson.setPersonList(new Person("Montcarmel","Elodie"));
+		lesson.setAttendeesList(new Person("Montcarmel","Elodie"));
 		answer = lesson.hasFreePlace();
 		assertEquals(answer, true);
-		lesson.setPersonList(new Person("Leprunier","Hugo"));
+		lesson.setAttendeesList(new Person("Leprunier","Hugo"));
 		answer = lesson.hasFreePlace();
 		assertEquals(answer, false);
 	}
@@ -61,8 +61,8 @@ public class LessonTest extends TestCase {
 	 */
 	public void testPersonIndex(){
 		Lesson lesson = new Lesson("Projet", null);
-		lesson.setPersonList(new Person("Bourdon","Laetitia"));
-		lesson.setPersonList(new Person("Montcarmel","Elodie"));
+		lesson.setAttendeesList(new Person("Bourdon","Laetitia"));
+		lesson.setAttendeesList(new Person("Montcarmel","Elodie"));
 		int answer = lesson.personIndex(new Person("Leprunier","Hugo"));
 		assertEquals("Le test devrait renvoyer -1", answer, -1);
 		answer = lesson.personIndex(new Person("Bourdon","Laetitia"));

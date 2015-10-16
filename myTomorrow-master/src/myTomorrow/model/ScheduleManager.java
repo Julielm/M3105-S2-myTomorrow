@@ -409,7 +409,7 @@ public class ScheduleManager {
 			index++;
 		}
 		Lesson lesson = (Lesson) this.events.get(index);
-		lesson.setPersonList(person);
+		lesson.setAttendeesList(person);
 		this.events.set(index, lesson);
 	}
 
@@ -478,13 +478,13 @@ public class ScheduleManager {
 	 */
 	private void removePersonInLesson(int index) {
 		Lesson lesson = (Lesson) this.events.get(index);
-		if (lesson.getPersNb() != 0) {
+		if (lesson.getAttendeesNb() != 0) {
 			Person personToRemove = this.myIHM.askPersonInformations();
 			int personIndex = lesson.personIndex(personToRemove);
 			if (personIndex >= 0) {
 				lesson.remove(personIndex);
 
-				if (lesson.getPersNb() == 0) {
+				if (lesson.getAttendeesNb() == 0) {
 					this.events.remove(index);
 					this.myIHM.eventDeleted();
 					this.myIHM.displayFinishedHandling(lesson);

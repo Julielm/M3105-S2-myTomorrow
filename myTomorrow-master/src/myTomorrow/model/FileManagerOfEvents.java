@@ -46,12 +46,12 @@ public class FileManagerOfEvents {
 								.getEndTime(), ((Appointment) event)
 								.getPerson().personInFile()));
 					if (event instanceof Lesson)
-						if (!((Lesson) event).persons().isEmpty()) {
+						if (!((Lesson) event).attendees().isEmpty()) {
 							fw.write(String.format("%s,%s,%s,%s/", event
 									.getTimeSlot().getStartTime(), event
 									.getTimeSlot().getEndTime(),
 									((Lesson) event).getTitle(),
-									((Lesson) event).persons()));
+									((Lesson) event).attendees()));
 						} else {
 							fw.write(String.format("%s,%s,%s,%s/", event
 									.getTimeSlot().getStartTime(), event
