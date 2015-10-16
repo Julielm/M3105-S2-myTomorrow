@@ -7,27 +7,14 @@ package myTomorrow.model;
  * @version 1.0.0
  */
 public class Appointment extends ScheduledEvent {
-	/** Person who takes the appointment. */
-	private final Person person;
-
-	/**
-	 * Constructor of an appointment.
-	 * 
-	 * @param person
-	 * @param timeSlot
-	 */
-	public Appointment(Person person, TimeSlot timeSlot) {
+	private final Person attendee;
+	
+	public Appointment(Person attendee, TimeSlot timeSlot) {
 		super(timeSlot);
-		this.person = person;
+		this.attendee = attendee;
 	}
 
-	/**
-	 * Getter for the person.
-	 * 
-	 * @return the person
-	 */
 	public Person getPerson() {
-		return this.person;
+		return this.attendee;
 	}
-
 }
