@@ -14,7 +14,7 @@ import javax.swing.JSplitPane;
 
 import org.joda.time.DateTime;
 
-import myTomorrow.model.Day;
+import myTomorrow.model.WorkDay;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
@@ -46,7 +46,7 @@ public class AvailableDayDialog extends JDialog implements ActionListener {
 	/**
 	 * Available day.
 	 */
-	private Day availableDay;
+	private WorkDay availableDay;
 	/**
 	 * Date picker.
 	 */
@@ -104,7 +104,7 @@ public class AvailableDayDialog extends JDialog implements ActionListener {
 		if (e.getSource() == this.okButton && selectedValue != null
 				&& !selectedValue.before(DateTime.now().minusDays(1).toDate())) {
 			this.selectedDate = new DateTime(selectedValue.getTime());
-			this.availableDay = new Day(this.selectedDate.getDayOfMonth(),
+			this.availableDay = new WorkDay(this.selectedDate.getDayOfMonth(),
 					this.selectedDate.getMonthOfYear(),
 					this.selectedDate.getYear());
 			this.dispose();
@@ -120,7 +120,7 @@ public class AvailableDayDialog extends JDialog implements ActionListener {
 	 * 
 	 * @return the available day
 	 */
-	public Day getAvailableDay() {
+	public WorkDay getAvailableDay() {
 		return this.availableDay;
 	}
 

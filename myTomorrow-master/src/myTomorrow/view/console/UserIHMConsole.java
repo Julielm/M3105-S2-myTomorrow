@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 import org.joda.time.DateTime;
 import myTomorrow.model.Answer;
-import myTomorrow.model.Day;
+import myTomorrow.model.WorkDay;
 import myTomorrow.model.Person;
 import myTomorrow.model.ScheduleManager;
 import myTomorrow.model.ScheduledEvent;
@@ -35,7 +35,7 @@ public class UserIHMConsole implements UserIHM {
 	}
 
 	@Override
-	public Day askAvailableDay() {
+	public WorkDay askAvailableDay() {
 
 		System.out.println("Entrez le jour disponible de la personne");
 		System.out.println("Entrez la date : jour -->");
@@ -58,7 +58,7 @@ public class UserIHMConsole implements UserIHM {
 		int year = Integer.parseInt(string);
 
 		try {
-			return new Day(date, month, year);
+			return new WorkDay(date, month, year);
 		} catch (Exception e) {
 			System.err.println("Vous avez rentré une date invalide");
 			this.askAvailableDay();
@@ -170,8 +170,8 @@ public class UserIHMConsole implements UserIHM {
 
 		try {
 			return new TimeSlot(new DateTime(year, month, date,
-					Day.START_HOUR_BY_DEFAULT, 0), new DateTime(year, month2,
-					date2, Day.END_HOUR_BY_DEFAULT, 0));
+					WorkDay.START_HOUR_BY_DEFAULT, 0), new DateTime(year, month2,
+					date2, WorkDay.END_HOUR_BY_DEFAULT, 0));
 		} catch (Exception e) {
 			System.err.println("Vous avez rentré une période invalide");
 			this.askAvailablePeriod();

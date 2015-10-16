@@ -3,7 +3,7 @@ package myTomorrow.view;
 import java.util.List;
 import org.joda.time.DateTime;
 import myTomorrow.model.Answer;
-import myTomorrow.model.Day;
+import myTomorrow.model.WorkDay;
 import myTomorrow.model.Person;
 import myTomorrow.model.ScheduleManager;
 import myTomorrow.model.ScheduledEvent;
@@ -28,7 +28,7 @@ public interface UserIHM {
 	 * 
 	 * @return a day
 	 */
-	public Day askAvailableDay();
+	public WorkDay askAvailableDay();
 
 	/**
 	 * Ask the duration of the event to schedule.

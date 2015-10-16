@@ -61,7 +61,7 @@ public class ScheduleManager {
 	public void addAppointment() {
 		Appointment appointment = this.inputAppointment();
 		if (appointment != null) {
-			Day availableDay = this.myIHM.askAvailableDay();
+			WorkDay availableDay = this.myIHM.askAvailableDay();
 			if (availableDay != null) {
 				int duration = this.myIHM.askDurationOfEvent();
 				if (duration != 0) {
@@ -122,7 +122,7 @@ public class ScheduleManager {
 	 * @param duration
 	 * @return a List of TimeSlot
 	 */
-	private List<TimeSlot> searchTimeSlot(Day day, int duration) {
+	private List<TimeSlot> searchTimeSlot(WorkDay day, int duration) {
 		List<TimeSlot> freeTimeSlots = new LinkedList<TimeSlot>();
 		freeTimeSlots.addAll(this.possibleEvents(day, duration, MORNING));
 		freeTimeSlots.addAll(this.possibleEvents(day, duration, AFTERNOON));
@@ -137,7 +137,7 @@ public class ScheduleManager {
 	 * @param isMorning
 	 * @return a list of TimeSlot
 	 */
-	private List<TimeSlot> possibleEvents(Day day, int duration,
+	private List<TimeSlot> possibleEvents(WorkDay day, int duration,
 			boolean isMorning) {
 		List<ScheduledEvent> eventsOnSameDay = this
 				.getAllEventsThatAreOnSameDay(day, isMorning);
@@ -160,7 +160,7 @@ public class ScheduleManager {
 	 * @param isMorning
 	 * @return a list of TimeSlot
 	 */
-	private List<TimeSlot> GetAllTimeSlotsInTheDay(Day day, int duration,
+	private List<TimeSlot> GetAllTimeSlotsInTheDay(WorkDay day, int duration,
 			boolean isMorning) {
 		List<TimeSlot> list = new LinkedList<TimeSlot>();
 		int hour = 14;
@@ -195,7 +195,7 @@ public class ScheduleManager {
 	 * @return a list of time slots
 	 */
 	private List<TimeSlot> getAllFreeTimeSlotsInTheDay(
-			List<ScheduledEvent> eventsOnSameDay, int duration, Day day,
+			List<ScheduledEvent> eventsOnSameDay, int duration, WorkDay day,
 			boolean isMorning) {
 		List<TimeSlot> freeTimeSlots = new LinkedList<TimeSlot>();
 		// Case of the first event in the list.
@@ -261,7 +261,7 @@ public class ScheduleManager {
 	 * @param isMorning
 	 * @return a list of scheduled events
 	 */
-	private List<ScheduledEvent> getAllEventsThatAreOnSameDay(Day day,
+	private List<ScheduledEvent> getAllEventsThatAreOnSameDay(WorkDay day,
 			boolean isMorning) {
 		List<ScheduledEvent> eventsOnSameDay = new LinkedList<ScheduledEvent>();
 		DateTime dateOfTheEvent = new DateTime();
@@ -301,7 +301,7 @@ public class ScheduleManager {
 	public void addLesson() {
 		Lesson lesson = this.inputLesson();
 		if (lesson != null) {
-			Day availableDay = this.myIHM.askAvailableDay();
+			WorkDay availableDay = this.myIHM.askAvailableDay();
 			if (availableDay != null) {
 				int duration = this.myIHM.askDurationOfEvent();
 				if (duration != 0) {

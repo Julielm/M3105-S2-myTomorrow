@@ -19,7 +19,7 @@ import org.joda.time.DateTime;
 
 import myTomorrow.model.Answer;
 import myTomorrow.model.Appointment;
-import myTomorrow.model.Day;
+import myTomorrow.model.WorkDay;
 import myTomorrow.model.Lesson;
 import myTomorrow.model.Person;
 import myTomorrow.model.ScheduleManager;
@@ -111,7 +111,7 @@ public class MainWindow extends JFrame implements Runnable, UserIHM,
 	}
 
 	@Override
-	public Day askAvailableDay() {
+	public WorkDay askAvailableDay() {
 		JDialog availableDay = new AvailableDayDialog();
 		availableDay.setVisible(true);
 		return ((AvailableDayDialog) availableDay).getAvailableDay();
