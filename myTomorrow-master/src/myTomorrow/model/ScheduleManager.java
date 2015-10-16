@@ -15,35 +15,16 @@ import org.joda.time.DateTime;
  */
 public class ScheduleManager {
 
-	/**
-	 * Constant for the morning.
-	 */
 	public static final boolean MORNING = true;
-	/**
-	 * Constant for the afternoon.
-	 */
+
 	public static final boolean AFTERNOON = false;
-	/**
-	 * List of the used time slots.
-	 */
+
 	private List<ScheduledEvent> events;
 
-	/**
-	 * User's IHM.
-	 */
 	private final UserIHM myIHM;
-	/**
-	 * A file's manager.
-	 */
+
 	private FileManagerOfEvents fileManagerOfEvents;
 
-	/**
-	 * Constructor of an application.
-	 * 
-	 * @param ihm
-	 *            chosen ihm, console or GUI
-	 * @param eventFile 
-	 */
 	public ScheduleManager(UserIHM ihm, File eventFile) {
 		this.fileManagerOfEvents = new FileManagerOfEvents(eventFile);
 		try {
@@ -55,32 +36,30 @@ public class ScheduleManager {
 		this.myIHM = ihm;
 	}
 
-	/**
-	 * Add an appointment.
-	 */
 	public void addAppointment() {
-		Appointment appointment = this.inputAppointment();
-		if (appointment != null) {
-			WorkDay availableDay = this.myIHM.askAvailableDay();
-			if (availableDay != null) {
-				int duration = this.myIHM.askDurationOfEvent();
-				if (duration != 0) {
-					List<TimeSlot> freeTimeSlot = this.searchTimeSlot(
-							availableDay, duration);
-					if (freeTimeSlot.isEmpty()) {
-						this.myIHM.freeTimeSlotIsEmpty();
-					} else {
-						TimeSlot answer = this.askAnswer(freeTimeSlot);
-						if (answer != null) {
-							appointment.setTimeSlot(answer);
-							addEventInASortList(appointment);
-							this.myIHM.displayFinishedHandling(appointment);
-							try {
-								this.fileManagerOfEvents
-										.writeEvents(this.events);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
+		Appointment appointment = this.prepareAppointmentForAPerson();
+		if (appointment == null)
+			return;
+		
+		WorkDay availableDay = this.myIHM.askAvailableDay();
+		if (availableDay != null) {
+			int duration = this.myIHM.askDurationOfEvent();
+			if (duration != 0) {
+				List<TimeSlot> freeTimeSlot = this.searchTimeSlot(
+						availableDay, duration);
+				if (freeTimeSlot.isEmpty()) {
+					this.myIHM.freeTimeSlotIsEmpty();
+				} else {
+					TimeSlot answer = this.askAnswer(freeTimeSlot);
+					if (answer != null) {
+						appointment.setTimeSlot(answer);
+						addEventInASortList(appointment);
+						this.myIHM.displayFinishedHandling(appointment);
+						try {
+							this.fileManagerOfEvents
+									.writeEvents(this.events);
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
 					}
 				}
@@ -107,7 +86,7 @@ public class ScheduleManager {
 	 * 
 	 * @return an appointment
 	 */
-	private Appointment inputAppointment() {
+	private Appointment prepareAppointmentForAPerson() {
 		Person person = this.myIHM.askPersonInformations();
 		if (person != null) {
 			return new Appointment(person, new TimeSlot());
@@ -129,59 +108,27 @@ public class ScheduleManager {
 		return freeTimeSlots;
 	}
 
-	/**
-	 * Research possible events in the half day put in parameter.
-	 * 
-	 * @param day
-	 * @param duration
-	 * @param isMorning
-	 * @return a list of TimeSlot
-	 */
-	private List<TimeSlot> possibleEvents(WorkDay day, int duration,
-			boolean isMorning) {
-		List<ScheduledEvent> eventsOnSameDay = this
-				.getAllEventsThatAreOnSameDay(day, isMorning);
+	private List<TimeSlot> possibleEvents(WorkDay day, int duration, boolean isMorning) {
+		List<ScheduledEvent> eventsOnSameDay = this.getAllEventsThatAreOnSameDay(day, isMorning);
 		List<TimeSlot> freeTimeSlots = new LinkedList<TimeSlot>();
 		if (eventsOnSameDay.isEmpty()) {
-			// Case where all the morning is free.
-			return this.GetAllTimeSlotsInTheDay(day, duration, isMorning);
+			return this.getAllTimeSlotsInAHalfDay(day, duration, isMorning);
 		}
-		freeTimeSlots = this.getAllFreeTimeSlotsInTheDay(eventsOnSameDay,
-				duration, day, isMorning);
+		freeTimeSlots = this.getAllFreeTimeSlotsInAHalfDay(eventsOnSameDay, duration, day, isMorning);
 		return freeTimeSlots;
 	}
 
-	/**
-	 * Get all time slots in a half day (put in parameter) when this half day is
-	 * empty.
-	 * 
-	 * @param day
-	 * @param duration
-	 * @param isMorning
-	 * @return a list of TimeSlot
-	 */
-	private List<TimeSlot> GetAllTimeSlotsInTheDay(WorkDay day, int duration,
-			boolean isMorning) {
+
+	private List<TimeSlot> getAllTimeSlotsInAHalfDay(WorkDay day, int duration, boolean isMorning) {
 		List<TimeSlot> list = new LinkedList<TimeSlot>();
-		int hour = 14;
-		DateTime startTime = new DateTime(day.getStartTime().getYear(), day
-				.getStartTime().getMonthOfYear(), day.getStartTime()
-				.getDayOfMonth(), hour, 0);
-		if (isMorning) {
-			hour = 12;
-			startTime = day.getStartTime();
-		}
-		DateTime endTime = startTime.plusMinutes(duration);
-		DateTime endOfHalfDay = day.getEndTime();
-		if (isMorning) {
-			endOfHalfDay = new DateTime(day.getStartTime().getYear(), day
-					.getStartTime().getMonthOfYear(), day.getStartTime()
-					.getDayOfMonth(), hour, 0);
-		}
-		while (endTime.isBefore(endOfHalfDay) || endTime.isEqual(endOfHalfDay)) {
-			list.add(new TimeSlot(startTime, endTime));
-			startTime = endTime;
-			endTime = startTime.plusMinutes(duration);
+		DateTime startTime = day.getHalfDay(isMorning).getStartTime();
+		DateTime endOfHalfDay = day.getHalfDay(isMorning).getEndTime();
+		DateTime endTimeSlot = startTime.plusMinutes(duration);
+		
+		while (endTimeSlot.isBefore(endOfHalfDay) || endTimeSlot.isEqual(endOfHalfDay)) {
+			list.add(new TimeSlot(startTime, endTimeSlot));
+			startTime = endTimeSlot;
+			endTimeSlot = startTime.plusMinutes(duration);
 		}
 		return list;
 	}
@@ -194,7 +141,7 @@ public class ScheduleManager {
 	 * @param day
 	 * @return a list of time slots
 	 */
-	private List<TimeSlot> getAllFreeTimeSlotsInTheDay(
+	private List<TimeSlot> getAllFreeTimeSlotsInAHalfDay(
 			List<ScheduledEvent> eventsOnSameDay, int duration, WorkDay day,
 			boolean isMorning) {
 		List<TimeSlot> freeTimeSlots = new LinkedList<TimeSlot>();
@@ -206,7 +153,7 @@ public class ScheduleManager {
 
 		DateTime date = new DateTime(day.getStartTime().getYear(), day
 				.getStartTime().getMonthOfYear(), day.getStartTime()
-				.getDayOfMonth(), 14, 0);
+				.getDayOfMonth(), WorkDay.START_TIME_AFTERNOON, 0);
 		if (isMorning) {
 			date = day.getStartTime();
 		}
@@ -243,7 +190,7 @@ public class ScheduleManager {
 		if (isMorning) {
 			date = new DateTime(day.getStartTime().getYear(), day
 					.getStartTime().getMonthOfYear(), day.getStartTime()
-					.getDayOfMonth(), 12, 0);
+					.getDayOfMonth(), WorkDay.END_TIME_MORNING, 0);
 		}
 		if (dateOfTheEventPlusDuration.isBefore(date)
 				|| dateOfTheEventPlusDuration.isEqual(date)) {
@@ -276,7 +223,7 @@ public class ScheduleManager {
 								.monthOfYear().get())
 						&& (dateOfTheEvent.year().get() == dateOfTheDay.year()
 								.get())
-						&& (dateOfTheEvent.hourOfDay().get() < 12)) {
+						&& (dateOfTheEvent.hourOfDay().get() < WorkDay.END_TIME_MORNING)) {
 					eventsOnSameDay.add(event);
 				}
 			} else {
@@ -286,7 +233,7 @@ public class ScheduleManager {
 								.monthOfYear().get())
 						&& (dateOfTheEvent.year().get() == dateOfTheDay.year()
 								.get())
-						&& (dateOfTheEvent.hourOfDay().get() >= 14)) {
+						&& (dateOfTheEvent.hourOfDay().get() >= WorkDay.START_TIME_AFTERNOON)) {
 					eventsOnSameDay.add(event);
 				}
 			}
